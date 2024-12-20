@@ -9,7 +9,7 @@
       margin: 0;
       overflow: hidden;
       background-color: #000;
-      background-image: url('space-bg.jpg'); /* Background texture */
+      background-image: url('space-bg.jpg'); /* Ensure this file is in the assets folder */
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
@@ -84,21 +84,12 @@
     window.addEventListener("resize", adjustCanvas);
     adjustCanvas();
 
-    // Textures
-    const playerImg = new Image();
-    playerImg.src = "player-texture.png"; // Texture for player platform
-
-    const snackImg = new Image();
-    snackImg.src = "snack-texture.png"; // Texture for snack
-
-    const heartImg = new Image();
-    heartImg.src = "heart-texture.png"; // Texture for heart
-
     const player = {
       x: canvas.width / 2 - 50,
       y: canvas.height - 50,
       width: 100,
-      height: 20
+      height: 20,
+      color: "red"
     };
 
     const snack = {
@@ -106,6 +97,7 @@
       y: 0,
       width: 20,
       height: 20,
+      color: "green",
       speed: 5,
       speedIncrement: 0.05
     };
@@ -115,6 +107,7 @@
       y: 0,
       width: 20,
       height: 20,
+      color: "pink",
       speed: 3
     };
 
@@ -217,16 +210,15 @@
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw player
-      ctx.drawImage(playerImg, player.x, player.y, player.width, player.height);
+      ctx.fillStyle = player.color;
+      ctx.fillRect(player.x, player.y, player.width, player.height);
 
-      // Draw snack
-      ctx.drawImage(snackImg, snack.x, snack.y, snack.width, snack.height);
+      ctx.fillStyle = snack.color;
+      ctx.fillRect(snack.x, snack.y, snack.width, snack.height);
 
-      // Draw heart
-      ctx.drawImage(heartImg, heart.x, heart.y, heart.width, heart.height);
+      ctx.fillStyle = heart.color;
+      ctx.fillRect(heart.x, heart.y, heart.width, heart.height);
 
-      // Draw protection area
       ctx.fillStyle = "gray";
       ctx.fillRect(0, canvas.height, canvas.width, protectionGap);
 
