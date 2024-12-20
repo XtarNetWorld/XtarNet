@@ -9,30 +9,25 @@
       margin: 0;
       overflow: hidden;
       background-color: #000;
-      background-image: url('Screenshot_2024-12-19-23-22-00-538-edit_com.camerasideas.trimmer.jpg'); /* Ensure this file is in the assets folder */
+      background-image: url('Screenshot_2024-12-19-23-22-00-538-edit_com.camerasideas.trimmer.jpg'); 
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
     }
     
-    #score {
+    #score, #highScore {
       position: absolute;
       top: 10px;
-      left: 10px;
       font-size: 4vw;
       font-family: Arial, sans-serif;
       color: #4caf50;
       z-index: 10;
     }
+
     #highScore {
-      position: absolute;
-      top: 10px;
       right: 10px;
-      font-size: 4vw;
-      font-family: Arial, sans-serif;
-      color: #4caf50;
-      z-index: 10;
     }
+
     #gameOverMessage {
       position: fixed;
       top: 50%;
@@ -45,6 +40,7 @@
       display: none;
       z-index: 20;
     }
+
     .button {
       background-color: #4caf50;
       color: white;
@@ -54,6 +50,10 @@
       border-radius: 10px;
       cursor: pointer;
       text-align: center;
+    }
+
+    canvas {
+      display: block;
     }
   </style>
 </head>
@@ -65,6 +65,7 @@
     <p>Game Over!</p>
     <button class="button" id="restartButton">Restart</button>
   </div>
+  
   <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
@@ -74,16 +75,21 @@
     const restartButton = document.getElementById("restartButton");
 
     const protectionGap = 125;
+    let score = 0;
+    let lifelines = 3;
+    let isGameOver = false;
+    let highScore = localStorage.getItem("highScore") ? parseInt(localStorage.getItem("highScore")) : 0;
+    highScoreElement.innerText = `High Score: ${highScore}`;
 
-    // Adjust canvas to fit full screen minus the protection gap
+    // Initialize canvas size and adjust on resize
     function adjustCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight - protectionGap;
     }
-
     window.addEventListener("resize", adjustCanvas);
     adjustCanvas();
 
+    // Player properties
     const player = {
       x: canvas.width / 2 - 50,
       y: canvas.height - 50,
@@ -92,6 +98,7 @@
       color: "red"
     };
 
+    // Snack properties
     const snack = {
       x: Math.random() * (canvas.width - 20),
       y: 0,
@@ -102,6 +109,7 @@
       speedIncrement: 0.05
     };
 
+    // Heart properties
     const heart = {
       x: Math.random() * (canvas.width - 20),
       y: 0,
@@ -111,13 +119,7 @@
       speed: 3
     };
 
-    let score = 0;
-    let lifelines = 3;
-    let isGameOver = false;
-    let highScore = localStorage.getItem("highScore") ? parseInt(localStorage.getItem("highScore")) : 0;
-
-    highScoreElement.innerText = `High Score: ${highScore}`;
-
+    // Restart button click event
     restartButton.addEventListener("click", restartGame);
 
     function restartGame() {
@@ -142,7 +144,6 @@
     function gameOver() {
       isGameOver = true;
       gameOverMessage.style.display = "block";
-
       if (score > highScore) {
         highScore = score;
         localStorage.setItem("highScore", highScore);
@@ -150,6 +151,7 @@
       }
     }
 
+    // Handle touch events to move player
     canvas.addEventListener("touchstart", handleTouch);
     canvas.addEventListener("touchmove", handleTouch);
 
@@ -157,11 +159,11 @@
       e.preventDefault();
       const touchX = e.touches[0].clientX;
       player.x = touchX - player.width / 2;
-
       if (player.x < 0) player.x = 0;
       if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
     }
 
+    // Update the game state
     function update() {
       if (isGameOver) return;
 
@@ -183,48 +185,52 @@
         heart.x = Math.random() * (canvas.width - heart.width);
       }
 
-      if (
-        snack.x < player.x + player.width &&
-        snack.x + snack.width > player.x &&
-        snack.y < player.y + player.height &&
-        snack.y + snack.height > player.y
-      ) {
+      // Check collisions with player
+      if (snack.x < player.x + player.width &&
+          snack.x + snack.width > player.x &&
+          snack.y < player.y + player.height &&
+          snack.y + snack.height > player.y) {
         score++;
         snack.y = 0;
         snack.x = Math.random() * (canvas.width - snack.width);
         snack.speed += snack.speedIncrement;
       }
 
-      if (
-        heart.x < player.x + player.width &&
-        heart.x + heart.width > player.x &&
-        heart.y < player.y + player.height &&
-        heart.y + heart.height > player.y
-      ) {
+      if (heart.x < player.x + player.width &&
+          heart.x + heart.width > player.x &&
+          heart.y < player.y + player.height &&
+          heart.y + heart.height > player.y) {
         if (lifelines < 3) lifelines++;
         heart.y = 0;
         heart.x = Math.random() * (canvas.width - heart.width);
       }
     }
 
+    // Draw the game state
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      // Draw player
       ctx.fillStyle = player.color;
       ctx.fillRect(player.x, player.y, player.width, player.height);
 
+      // Draw snack
       ctx.fillStyle = snack.color;
       ctx.fillRect(snack.x, snack.y, snack.width, snack.height);
 
+      // Draw heart
       ctx.fillStyle = heart.color;
       ctx.fillRect(heart.x, heart.y, heart.width, heart.height);
 
+      // Draw protection gap
       ctx.fillStyle = "gray";
       ctx.fillRect(0, canvas.height, canvas.width, protectionGap);
 
+      // Update score and lifelines
       scoreElement.innerText = `Score: ${score} | Lifelines: ${lifelines}`;
     }
 
+    // Main game loop
     function gameLoop() {
       if (isGameOver) return;
       update();
