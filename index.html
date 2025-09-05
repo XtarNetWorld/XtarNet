@@ -1,244 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Snack Catcher</title>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      background-color: #000;
-      background-image: url('Screenshot_2024-12-19-23-22-00-538-edit_com.camerasideas.trimmer.jpg'); 
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="0;url=https://xtarnet.us.to">
+    <title>Redirecting to XtarNet</title>
+    <meta name="description" content="This site has permanently moved to https://xtarnet.us.to. You will be redirected automatically.">
+    <meta name="robots" content="noindex, follow">
+    <link rel="canonical" href="https://xtarnet.us.to">
     
-    #score, #highScore {
-      position: absolute;
-      top: 10px;
-      font-size: 4vw;
-      font-family: Arial, sans-serif;
-      color: #4caf50;
-      z-index: 10;
-    }
-
-    #highScore {
-      right: 10px;
-    }
-
-    #gameOverMessage {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 6vw;
-      font-family: Arial, sans-serif;
-      color: red;
-      text-align: center;
-      display: none;
-      z-index: 20;
-    }
-
-    .button {
-      background-color: #4caf50;
-      color: white;
-      font-size: 4vw;
-      padding: 1vw 3vw;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      text-align: center;
-    }
-
-    canvas {
-      display: block;
-    }
-  </style>
+    <!-- Open Graph for Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="XtarNet - New Site Location">
+    <meta property="og:description" content="XtarNet has moved to https://xtarnet.us.to. Please update your bookmarks.">
+    <meta property="og:url" content="https://xtarnet.us.to">
+    <meta property="og:site_name" content="XtarNet">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="XtarNet - New Site Location">
+    <meta name="twitter:description" content="XtarNet has moved to https://xtarnet.us.to. Please update your bookmarks.">
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .container {
+            padding: 20px;
+            max-width: 600px;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        a {
+            color: #00ffcc;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-  <div id="score">Score: 0</div>
-  <div id="highScore">High Score: 0</div>
-  <canvas id="gameCanvas"></canvas>
-  <div id="gameOverMessage">
-    <p>Game Over!</p>
-    <button class="button" id="restartButton">Restart</button>
-  </div>
-  
-  <script>
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
-    const scoreElement = document.getElementById("score");
-    const highScoreElement = document.getElementById("highScore");
-    const gameOverMessage = document.getElementById("gameOverMessage");
-    const restartButton = document.getElementById("restartButton");
+    <div class="container">
+        <h1>We've Moved!</h1>
+        <p>XtarNet has permanently moved to <a href="https://xtarnet.us.to">https://xtarnet.us.to</a>.</p>
+        <p>You will be redirected automatically in a few seconds. If not, please click the link above.</p>
+    </div>
 
-    const protectionGap = 125;
-    let score = 0;
-    let lifelines = 3;
-    let isGameOver = false;
-    let highScore = localStorage.getItem("highScore") ? parseInt(localStorage.getItem("highScore")) : 0;
-    highScoreElement.innerText = `High Score: ${highScore}`;
-
-    // Initialize canvas size and adjust on resize
-    function adjustCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight - protectionGap;
-    }
-    window.addEventListener("resize", adjustCanvas);
-    adjustCanvas();
-
-    // Player properties
-    const player = {
-      x: canvas.width / 2 - 50,
-      y: canvas.height - 50,
-      width: 100,
-      height: 20,
-      color: "red"
-    };
-
-    // Snack properties
-    const snack = {
-      x: Math.random() * (canvas.width - 20),
-      y: 0,
-      width: 20,
-      height: 20,
-      color: "green",
-      speed: 5,
-      speedIncrement: 0.05
-    };
-
-    // Heart properties
-    const heart = {
-      x: Math.random() * (canvas.width - 20),
-      y: 0,
-      width: 20,
-      height: 20,
-      color: "pink",
-      speed: 3
-    };
-
-    // Restart button click event
-    restartButton.addEventListener("click", restartGame);
-
-    function restartGame() {
-      isGameOver = false;
-      score = 0;
-      lifelines = 3;
-
-      player.x = canvas.width / 2 - player.width / 2;
-      snack.x = Math.random() * (canvas.width - snack.width);
-      snack.y = 0;
-      snack.speed = 5;
-
-      heart.x = Math.random() * (canvas.width - heart.width);
-      heart.y = 0;
-
-      gameOverMessage.style.display = "none";
-      scoreElement.innerText = `Score: ${score} | Lifelines: ${lifelines}`;
-
-      requestAnimationFrame(gameLoop);
-    }
-
-    function gameOver() {
-      isGameOver = true;
-      gameOverMessage.style.display = "block";
-      if (score > highScore) {
-        highScore = score;
-        localStorage.setItem("highScore", highScore);
-        highScoreElement.innerText = `High Score: ${highScore}`;
-      }
-    }
-
-    // Handle touch events to move player
-    canvas.addEventListener("touchstart", handleTouch);
-    canvas.addEventListener("touchmove", handleTouch);
-
-    function handleTouch(e) {
-      e.preventDefault();
-      const touchX = e.touches[0].clientX;
-      player.x = touchX - player.width / 2;
-      if (player.x < 0) player.x = 0;
-      if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
-    }
-
-    // Update the game state
-    function update() {
-      if (isGameOver) return;
-
-      snack.y += snack.speed;
-      heart.y += heart.speed;
-
-      if (snack.y > canvas.height) {
-        lifelines--;
-        if (lifelines <= 0) {
-          gameOver();
-          return;
-        }
-        snack.y = 0;
-        snack.x = Math.random() * (canvas.width - snack.width);
-      }
-
-      if (heart.y > canvas.height) {
-        heart.y = 0;
-        heart.x = Math.random() * (canvas.width - heart.width);
-      }
-
-      // Check collisions with player
-      if (snack.x < player.x + player.width &&
-          snack.x + snack.width > player.x &&
-          snack.y < player.y + player.height &&
-          snack.y + snack.height > player.y) {
-        score++;
-        snack.y = 0;
-        snack.x = Math.random() * (canvas.width - snack.width);
-        snack.speed += snack.speedIncrement;
-      }
-
-      if (heart.x < player.x + player.width &&
-          heart.x + heart.width > player.x &&
-          heart.y < player.y + player.height &&
-          heart.y + heart.height > player.y) {
-        if (lifelines < 3) lifelines++;
-        heart.y = 0;
-        heart.x = Math.random() * (canvas.width - heart.width);
-      }
-    }
-
-    // Draw the game state
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Draw player
-      ctx.fillStyle = player.color;
-      ctx.fillRect(player.x, player.y, player.width, player.height);
-
-      // Draw snack
-      ctx.fillStyle = snack.color;
-      ctx.fillRect(snack.x, snack.y, snack.width, snack.height);
-
-      // Draw heart
-      ctx.fillStyle = heart.color;
-      ctx.fillRect(heart.x, heart.y, heart.width, heart.height);
-
-      // Draw protection gap
-      ctx.fillStyle = "gray";
-      ctx.fillRect(0, canvas.height, canvas.width, protectionGap);
-
-      // Update score and lifelines
-      scoreElement.innerText = `Score: ${score} | Lifelines: ${lifelines}`;
-    }
-
-    // Main game loop
-    function gameLoop() {
-      if (isGameOver) return;
-      update();
-      draw();
-      requestAnimationFrame(gameLoop);
-    }
-
-    gameLoop();
-  </script>
+    <script>
+        // JavaScript fallback redirect
+        window.location.replace("https://xtarnet.us.to");
+    </script>
 </body>
 </html>
